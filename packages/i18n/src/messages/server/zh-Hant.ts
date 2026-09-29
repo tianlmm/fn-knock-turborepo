@@ -1700,6 +1700,20 @@ export const zhHantServer = {
     updateTargetFailed: "更新 DDNS 條目失敗",
     deleteTargetFailed: "刪除 DDNS 條目失敗",
     updateTargetEnabledFailed: "更新 DDNS 條目啟用狀態失敗",
+    dualGatewayTitle: "雙網關統一域名",
+    dualGatewayDescription:
+      "同一域名同時發布 AAAA 和 A 記錄，IPv6 客戶端走 DDNS 直連，IPv4 客戶端走 Cloudflare 穿透",
+    dualGatewayReady: "雙網關入口已就緒",
+    dualGatewayPartial: "雙網關入口部分就緒",
+    dualGatewayDdnsNotConfigured: "DDNS 未配置主域",
+    dualGatewayCloudflareNotReady: "Cloudflare Tunnel 未接入或未進入 managed 模式",
+    dualGatewayNoIpv6: "DDNS 未偵測到可用的公網 IPv6 位址",
+    dualGatewayIpv6Label: "IPv6 直連（DDNS 網關 A）",
+    dualGatewayIpv6Desc:
+      "客戶端有 IPv6 時命中 AAAA 記錄，直連公網 IPv6 位址",
+    dualGatewayIpv4Label: "IPv4 穿透（Cloudflare 網關 B）",
+    dualGatewayIpv4Desc:
+      "客戶端僅 IPv4 時命中 A 記錄，經 Cloudflare Tunnel 回源",
     providers: {
       common: {
         fields: {

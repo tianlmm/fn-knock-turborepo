@@ -32,6 +32,7 @@ export type DDNSUpdateScope = DDNSStatusPayload["updateScope"];
 export type DDNSHttpTransport = DDNSSettingsPayload["httpTransport"];
 export type DDNSPublicDnsProvider = DDNSSettingsPayload["publicDnsProvider"];
 export type DDNSPublicCheckFamily = DDNSPublicCheckTestResultPayload["family"];
+export type DDNSDualGatewayPayload = DdnsSchemas["DdnsDualGatewayData"];
 
 type DdnsPublicCheckTestBody = DdnsSchemas["DdnsPublicCheckTestBodyData"];
 type DdnsPublicCheckTestResults = DdnsSchemas["DdnsPublicCheckTestResultsData"];
@@ -205,6 +206,10 @@ export const DDNSAPI = {
       params,
       signal,
     });
+    return res.data.data;
+  },
+  async getDualGateway(): Promise<DDNSDualGatewayPayload> {
+    const res = await apiClient.get("/ddns/dual-gateway");
     return res.data.data;
   },
 };

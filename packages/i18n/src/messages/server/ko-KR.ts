@@ -1942,6 +1942,21 @@ export const koKRServer = {
     deleteTargetFailed: "DDNS 항목을 삭제하지 못했습니다.",
     updateTargetEnabledFailed:
       "DDNS 항목 활성화 상태를 업데이트하지 못했습니다.",
+    dualGatewayTitle: "듀얼 게이트웨이 통합 도메인",
+    dualGatewayDescription:
+      "동일 호스트명에 AAAA와 A 레코드를 동시에 게시. IPv6 클라이언트는 DDNS 직접, IPv4 클라이언트는 Cloudflare 터널 경유",
+    dualGatewayReady: "듀얼 게이트웨이 진입점 준비 완료",
+    dualGatewayPartial: "듀얼 게이트웨이 진입점 부분 준비",
+    dualGatewayDdnsNotConfigured: "기본 DDNS 항목이 설정되지 않았습니다",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare 터널이 연결되지 않았거나 managed 모드가 아닙니다",
+    dualGatewayNoIpv6: "DDNS가 공개 IPv6 주소를 감지하지 못했습니다",
+    dualGatewayIpv6Label: "IPv6 직접 (DDNS 게이트웨이 A)",
+    dualGatewayIpv6Desc:
+      "IPv6 클라이언트는 AAAA 레코드를 적중하여 공개 IPv6에 직접 연결",
+    dualGatewayIpv4Label: "IPv4 Cloudflare 경유 (게이트웨이 B)",
+    dualGatewayIpv4Desc:
+      "IPv4 전용 클라이언트는 A 레코드를 적중하여 Cloudflare 터널로 회귀",
     providers: {
       common: {
         fields: {

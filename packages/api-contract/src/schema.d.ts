@@ -2802,6 +2802,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/ddns/dual-gateway": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 查看动态 DNS双网关统一域名
+         * @description 聚合 DDNS 主域与 Cloudflare Tunnel 状态，返回统一域名入口信息：同一域名的 AAAA 记录走 DDNS 直连（网关 A），A 记录走 Cloudflare 穿透（网关 B）。
+         */
+        get: operations["get_api_admin_ddns_dual_gateway"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/ddns/interfaces": {
         parameters: {
             query?: never;
@@ -4485,7 +4505,7 @@ export interface paths {
          * 查看NAS 面板同步同步记录
          * @description 管理 Sun-Panel、OneNav 与 Van Nav 的单向链接同步。。`GET /api/admin/panel-sync/connections/{id}/runs` 用于读取当前状态、配置或导出内容，不会主动修改服务配置。 该操作不要求 JSON 请求体。 成功响应通常使用标准管理端 JSON 信封，具体 `data` 结构请查看响应 schema。
          */
-        get: operations["list"];
+        get: operations["list_runs"];
         put?: never;
         post?: never;
         delete?: never;
@@ -9279,6 +9299,29 @@ export interface components {
             logs: components["schemas"]["DdnsLogEntryData"][];
             reset: boolean;
             status: components["schemas"]["DdnsStatusData"];
+        };
+        DdnsDualGatewayCloudflarePathData: {
+            description: string;
+            enabled: boolean;
+            label: string;
+            rootDomain?: string;
+            tunnelId?: string;
+            tunnelRunning: boolean;
+            zoneName?: string;
+        };
+        DdnsDualGatewayData: {
+            ipv6Direct: components["schemas"]["DdnsDualGatewayPathData"];
+            ipv4Cloudflare: components["schemas"]["DdnsDualGatewayCloudflarePathData"];
+            message: string;
+            ready: boolean;
+            unifiedHostname: string;
+        };
+        DdnsDualGatewayPathData: {
+            description: string;
+            enabled: boolean;
+            ipv6Address?: string;
+            label: string;
+            targetDomain?: string;
         };
         DdnsProviderBodyData: {
             /** @description Provider identifier. Surrounding whitespace remains accepted for compatibility. */
@@ -20954,6 +20997,42 @@ export interface operations {
             };
         };
     };
+    get_api_admin_ddns_dual_gateway: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 「查看动态 DNS双网关统一域名」成功，返回统一域名聚合信息。 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["DdnsDualGatewayData"];
+                        message?: string | null;
+                        /** @constant */
+                        success: true;
+                    } & {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description 接口处理失败时返回标准错误信封；请结合 HTTP 状态、错误消息和服务日志排查。 */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorEnvelope"];
+                };
+            };
+        };
+    };
     get_api_admin_ddns_interfaces: {
         parameters: {
             query?: never;
@@ -24993,7 +25072,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_runs: {
         parameters: {
             query?: never;
             header?: never;

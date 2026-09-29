@@ -2,6 +2,7 @@
 import { Settings2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import DualGatewayCard from "./DualGatewayCard.vue";
 import DocsLinkButton from "@/components/DocsLinkButton.vue";
 import ConfirmationDialog from "@admin-shared/components/common/ConfirmationDialog.vue";
 import { docsUrls } from "../../lib/docs";
@@ -138,6 +139,8 @@ const {
   updateIntervalDraft,
   updateIntervalLabel,
   updateTargetDialogNetworkInterface,
+  dualGateway,
+  dualGatewayLoading,
 } = props.controller;
 </script>
 
@@ -184,6 +187,8 @@ const {
       :show-ipv6-status="showIPv6Status"
       :update-interval-label="updateIntervalLabel"
     />
+
+    <DualGatewayCard :data="dualGateway" :loading="dualGatewayLoading" />
 
     <DDNSPrimaryConfigCard
       :configured="hasProviderConfig"

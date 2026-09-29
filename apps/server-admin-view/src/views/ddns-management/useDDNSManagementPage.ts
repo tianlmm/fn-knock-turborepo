@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { onBeforeRouteLeave } from "vue-router";
-import { DDNSAPI, type DDNSNetworkInterfacePayload } from "@/lib/api/ddns";
+import { DDNSAPI, type DDNSDualGatewayPayload, type DDNSNetworkInterfacePayload } from "@/lib/api/ddns";
 import { useConfirmationDialog } from "@admin-shared/composables/useConfirmationDialog";
 import { toast } from "@admin-shared/utils/toast";
 import {
@@ -62,6 +62,8 @@ export const useDDNSManagementPage = () => {
   const testingTargetId = ref("");
   const deletingTargetId = ref("");
   const togglingTargetId = ref("");
+  const dualGateway = ref<DDNSDualGatewayPayload | null>(null);
+  const dualGatewayLoading = ref(false);
   const {
     applyStatus,
     defaultPublicCheckSources,
@@ -485,12 +487,24 @@ export const useDDNSManagementPage = () => {
     if (initialized && !isDisposed) {
       startPolling();
     }
+    void loadDualGateway();
   });
   onUnmounted(() => {
     isDisposed = true;
     window.removeEventListener("beforeunload", handleBeforeUnload);
     stopPolling();
   });
+
+  async function loadDualGateway() {
+    dualGatewayLoading.value = true;
+    try {
+      dualGateway.value = await DDNSAPI.getDualGateway();
+    } catch {
+      dualGateway.value = null;
+    } finally {
+      dualGatewayLoading.value = false;
+    }
+  }
 
   return {
     applyCredentialTransfer,
@@ -614,6 +628,9 @@ export const useDDNSManagementPage = () => {
     updateIntervalDraft,
     updateIntervalLabel,
     updateTargetDialogNetworkInterface,
+    dualGateway,
+    dualGatewayLoading,
+    loadDualGateway,
   };
 };
 

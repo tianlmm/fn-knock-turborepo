@@ -335,3 +335,40 @@ pub(super) struct DdnsPollData {
     logs: Vec<DdnsLogEntryData>,
     status: DdnsStatusData,
 }
+
+#[derive(Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub(super) struct DdnsDualGatewayPathData {
+    enabled: bool,
+    label: String,
+    description: String,
+    #[schema(required = true)]
+    ipv6_address: Option<String>,
+    #[schema(required = true)]
+    target_domain: Option<String>,
+}
+
+#[derive(Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub(super) struct DdnsDualGatewayCloudflarePathData {
+    enabled: bool,
+    label: String,
+    description: String,
+    #[schema(required = true)]
+    root_domain: Option<String>,
+    #[schema(required = true)]
+    zone_name: Option<String>,
+    #[schema(required = true)]
+    tunnel_id: Option<String>,
+    tunnel_running: bool,
+}
+
+#[derive(Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub(super) struct DdnsDualGatewayData {
+    ready: bool,
+    unified_hostname: String,
+    message: String,
+    ipv6_direct: DdnsDualGatewayPathData,
+    ipv4_cloudflare: DdnsDualGatewayCloudflarePathData,
+}

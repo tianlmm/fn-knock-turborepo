@@ -88,6 +88,7 @@ const DDNS_STATIC_IPV4_FIELD: &str = "static_ipv4";
 const DDNS_STATIC_IPV6_FIELD: &str = "static_ipv6";
 const DDNS_SOURCE_DOMAIN_FIELD: &str = "source_domain";
 const DDNS_EDGEONE_OVERSEAS_ACCESS_FIELD: &str = "edgeone_overseas_access";
+const CLOUDFLARED_MANAGED_CONFIG_KEY: &str = "fn_knock:cloudflared:managed:config:v1";
 
 const DEFAULT_PUBLIC_CHECK_IPV4: [&str; 2] = ["https://4.fnknock.cn", "http://ipv4.icanhazip.com"];
 const DEFAULT_PUBLIC_CHECK_IPV6: [&str; 2] =
@@ -232,6 +233,7 @@ pub(crate) fn ddns_openapi_routes() -> OpenApiRouter<AppState> {
         .routes(routes!(get_logs))
         .routes(routes!(clear_logs))
         .routes(routes!(poll))
+        .routes(routes!(get_dual_gateway))
 }
 
 pub fn start_ddns_tasks(state: AppState) {
@@ -996,4 +998,124 @@ fn manual_test_result_message(
         },
         &[("message", result.message.clone())],
     )
+}
+
+#[utoipa::path(get, path = "/api/admin/ddns/dual-gateway", tag = "ddns", operation_id = "get_api_admin_ddns_dual_gateway", responses((status = 200, description = "Dual gateway unified domain info")))]
+async fn get_dual_gateway(State(state): State<AppState>) -> Response {
+    let translator = Translator::from_state(&state).await;
+    match build_dual_gateway_info(&state, &translator).await {
+        Ok(info) => response::ok(info).into_response(),
+        Err(error) => {
+            tracing::warn!(%error, "failed to build dual gateway info");
+            response::error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ddns_text(&translator, "statusLoadFailed", &[]),
+            )
+        }
+    }
+}
+
+async fn build_dual_gateway_info(
+    state: &AppState,
+    translator: &Translator,
+) -> anyhow::Result<Value> {
+    // --- Cloudflared managed 状态 ---
+    let cloudflared_managed = state
+        .storage
+        .store
+        .get_json_value(CLOUDFLARED_MANAGED_CONFIG_KEY)
+        .await
+        .ok()
+        .flatten();
+
+    let cloudflare_root = cloudflared_managed
+        .as_ref()
+        .and_then(|v| v.get("rootDomain"))
+        .and_then(Value::as_str)
+        .map(|s| s.trim().to_ascii_lowercase())
+        .filter(|s| !s.is_empty());
+
+    let cloudflare_zone = cloudflared_managed
+        .as_ref()
+        .and_then(|v| v.get("zoneName"))
+        .and_then(Value::as_str)
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty());
+
+    let cloudflare_tunnel_id = cloudflared_managed
+        .as_ref()
+        .and_then(|v| v.get("tunnel"))
+        .and_then(|v| v.get("id"))
+        .and_then(Value::as_str)
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty());
+
+    let cloudflare_enabled = cloudflared_managed
+        .as_ref()
+        .and_then(|v| v.get("mode"))
+        .and_then(Value::as_str)
+        .map(|m| m == "managed")
+        .unwrap_or(false);
+
+    // --- DDNS primary target ---
+    let ddns_primary = primary_target(state).await.ok();
+
+    let ddns_ipv6 = ddns_primary
+        .as_ref()
+        .and_then(|t| t.last_ip.get("ipv6"))
+        .and_then(Value::as_str)
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty());
+
+    let ddns_domain = ddns_primary
+        .as_ref()
+        .and_then(|t| domain_summary_candidate(&t.config));
+
+    let ddns_enabled = ddns_primary
+        .as_ref()
+        .map(|t| t.meta.enabled && !t.meta.provider.is_none())
+        .unwrap_or(false);
+
+    // --- 确定统一入口域名 ---
+    // 优先使用 DDNS 配置的 domain，其次使用 Cloudflare root_domain
+    let unified_hostname = ddns_domain.clone().or(cloudflare_root.clone()).unwrap_or_default();
+
+    let cloudflare_path_enabled = cloudflare_enabled && cloudflare_root.is_some();
+    let ipv6_path_ready = ddns_enabled && ddns_ipv6.is_some();
+
+    let ready = ipv6_path_ready && cloudflare_path_enabled && !unified_hostname.is_empty();
+
+    let message = if ready {
+        ddns_text(translator, "dualGatewayReady", &[])
+    } else if !ddns_enabled {
+        ddns_text(translator, "dualGatewayDdnsNotConfigured", &[])
+    } else if !cloudflare_path_enabled {
+        ddns_text(translator, "dualGatewayCloudflareNotReady", &[])
+    } else if ddns_ipv6.is_none() {
+        ddns_text(translator, "dualGatewayNoIpv6", &[])
+    } else {
+        ddns_text(translator, "dualGatewayPartial", &[])
+    };
+
+    Ok(json!({
+        "ready": ready,
+        "unifiedHostname": unified_hostname,
+        "message": message,
+        "ipv6Direct": {
+            "enabled": ipv6_path_ready,
+            "label": ddns_text(translator, "dualGatewayIpv6Label", &[]),
+            "description": ddns_text(translator, "dualGatewayIpv6Desc", &[]),
+            "ipv6Address": ddns_ipv6,
+            "targetDomain": ddns_domain,
+        },
+        "ipv4Cloudflare": {
+            "enabled": cloudflare_path_enabled,
+            "label": ddns_text(translator, "dualGatewayIpv4Label", &[]),
+            "description": ddns_text(translator, "dualGatewayIpv4Desc", &[]),
+            "rootDomain": cloudflare_root,
+            "zoneName": cloudflare_zone,
+            "tunnelId": cloudflare_tunnel_id,
+            "tunnelRunning": cloudflare_path_enabled,
+        },
+    }))
 }

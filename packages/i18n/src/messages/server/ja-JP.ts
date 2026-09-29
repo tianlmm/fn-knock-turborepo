@@ -2015,6 +2015,21 @@ export const jaJPServer = {
     updateTargetFailed: "DDNS エントリの更新に失敗しました",
     deleteTargetFailed: "DDNS エントリの削除に失敗しました",
     updateTargetEnabledFailed: "DDNS エントリの有効状態を更新できませんでした",
+    dualGatewayTitle: "デュアルゲートウェイ統一ドメイン",
+    dualGatewayDescription:
+      "同一ホスト名に AAAA と A の両方のレコードを発行。IPv6 クライアントは DDNS 直連、IPv4 クライアントは Cloudflare トンネル経由",
+    dualGatewayReady: "デュアルゲートウェイエントリは準備完了",
+    dualGatewayPartial: "デュアルゲートウェイエントリは一部準備完了",
+    dualGatewayDdnsNotConfigured: "メイン DDNS エントリが設定されていません",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare トンネルが未接続、または managed モードではありません",
+    dualGatewayNoIpv6: "DDNS が公開 IPv6 アドレスを検出していません",
+    dualGatewayIpv6Label: "IPv6 直連（DDNS ゲートウェイ A）",
+    dualGatewayIpv6Desc:
+      "IPv6 クライアントは AAAA レコードを命中し、公開 IPv6 に直接接続",
+    dualGatewayIpv4Label: "IPv4 Cloudflare 経由（ゲートウェイ B）",
+    dualGatewayIpv4Desc:
+      "IPv4 のみのクライアントは A レコードを命中し、Cloudflare トンネル経由で回源",
     providers: {
       common: {
         fields: {

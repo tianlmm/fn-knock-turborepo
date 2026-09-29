@@ -1928,6 +1928,21 @@ export const enServer = {
     updateTargetFailed: "Failed to update DDNS entry",
     deleteTargetFailed: "Failed to delete DDNS entry",
     updateTargetEnabledFailed: "Failed to update DDNS entry enabled state",
+    dualGatewayTitle: "Dual-gateway unified domain",
+    dualGatewayDescription:
+      "Publish both AAAA and A records for the same hostname. IPv6 clients use DDNS direct, IPv4 clients go through Cloudflare tunnel",
+    dualGatewayReady: "Dual-gateway entry is ready",
+    dualGatewayPartial: "Dual-gateway entry is partially ready",
+    dualGatewayDdnsNotConfigured: "Primary DDNS target is not configured",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare Tunnel is not connected or not in managed mode",
+    dualGatewayNoIpv6: "DDNS has not detected a public IPv6 address",
+    dualGatewayIpv6Label: "IPv6 direct (DDNS gateway A)",
+    dualGatewayIpv6Desc:
+      "IPv6 clients hit the AAAA record and connect directly to the public IPv6",
+    dualGatewayIpv4Label: "IPv4 through Cloudflare (gateway B)",
+    dualGatewayIpv4Desc:
+      "IPv4-only clients hit the A record and are routed back via Cloudflare Tunnel",
     providers: {
       common: {
         fields: {
