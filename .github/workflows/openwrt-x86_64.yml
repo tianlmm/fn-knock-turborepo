@@ -1,0 +1,133 @@
+name: OpenWrt x86_64 IPK (slim)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fn-knock-openwrt-x86_64
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22.22.3"
+  NPM_VERSION: "10.8.2"
+  RUST_VERSION: "1.96.0"
+  ZIG_VERSION: "0.16.0"
+  ZIG_LINUX_X86_64_SHA256: "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
+  CARGO_ZIGBUILD_VERSION: "0.22.3"
+  GO_REAUTH_PROXY_REPO: kci-lnk/Go-Reauth-Proxy
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout fn-knock
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Checkout Go gateway
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: ${{ env.GO_REAUTH_PROXY_REPO }}
+          path: Go-Reauth-Proxy
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: Go-Reauth-Proxy/go.mod
+          cache-dependency-path: Go-Reauth-Proxy/go.sum
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+
+      - name: Set up Zig
+        shell: bash
+        run: |
+          archive="${RUNNER_TEMP}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz"
+          install_dir="${RUNNER_TEMP}/zig-${ZIG_VERSION}"
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output "${archive}" \
+            "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz"
+          printf '%s  %s\n' "${ZIG_LINUX_X86_64_SHA256}" "${archive}" | sha256sum --check -
+          mkdir -p "${install_dir}"
+          tar -xJf "${archive}" --strip-components=1 -C "${install_dir}"
+          printf '%s\n' "${install_dir}" >> "${GITHUB_PATH}"
+          "${install_dir}/zig" version
+
+      - name: Install npm deps
+        shell: bash
+        run: |
+          npm install --global "npm@${NPM_VERSION}"
+          npm ci
+
+      - name: Build frontends
+        shell: bash
+        run: npx turbo run build --filter=server-admin-view --filter=server-auth-view
+
+      - name: Build Go gateway (amd64 only)
+        shell: bash
+        env:
+          FN_KNOCK_GATEWAY_COMMIT: ${{ github.event.head_commit.id }}
+        run: |
+          FN_KNOCK_GO_SKIP_TESTS=1 \
+            bash ./scripts/build-go-release.sh \
+              "${GITHUB_WORKSPACE}/Go-Reauth-Proxy" \
+              "${GITHUB_WORKSPACE}/dist/fn-knock-go-release"
+
+      - name: Build musl Rust backend (amd64 only)
+        shell: bash
+        run: |
+          cargo install cargo-zigbuild --version "${CARGO_ZIGBUILD_VERSION}" --locked
+          output="${GITHUB_WORKSPACE}/dist/fn-knock-artifacts/musl-rust-backends/server-admin-rs-linux-amd64"
+          bash ./scripts/build-rust-backend.sh musl amd64 "${output}"
+          jq -r .version version.json > "${output}.version"
+
+      - name: Stage runtime (amd64 only)
+        shell: bash
+        run: |
+          runtime="dist/fn-knock-artifacts/runtime"
+          mkdir -p "${runtime}/ui/www" "${runtime}/server-auth-view/dist" \
+                   "${runtime}/server/server-admin/resources" "${runtime}/server"
+          rsync -a apps/server-admin-view/dist/ "${runtime}/ui/www/"
+          rsync -a apps/server-auth-view/dist/ "${runtime}/server-auth-view/dist/"
+          cp apps/server-admin-rs/resources/acmesh.zip "${runtime}/server/server-admin/resources/acmesh.zip"
+          cp "dist/fn-knock-go-release/go-reauth-proxy-linux-amd64" "${runtime}/server/"
+          cp "dist/fn-knock-go-release/go-reauth-proxy-linux-amd64.version" "${runtime}/server/"
+
+      - name: Build OpenWrt x86_64 IPK
+        shell: bash
+        run: |
+          FN_KNOCK_ARTIFACTS_ALREADY_PREPARED=1 \
+          FN_KNOCK_USE_PREPARED_ARTIFACTS=1 \
+          FN_KNOCK_OPENWRT_ARCHES="x86_64:amd64" \
+          FN_KNOCK_OPENWRT_FORMATS="ipk" \
+          bash ./scripts/build-openwrt-ipk.sh
+
+      - name: Show built artifacts
+        shell: bash
+        run: |
+          echo "=== IPK output ==="
+          ls -lh dist/openwrt/*.ipk 2>/dev/null || echo "(no ipk found)"
+          echo "=== APK output ==="
+          ls -lh dist/openwrt/*.apk 2>/dev/null || echo "(no apk found)"
+
+      - name: Upload OpenWrt packages
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openwrt-x86_64-ipk
+          path: |
+            dist/openwrt/*.ipk
+            dist/openwrt/*.apk
+          if-no-files-found: error
+          retention-days: 30
