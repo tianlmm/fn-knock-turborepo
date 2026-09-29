@@ -4,7 +4,7 @@ import { Cloud, Copy, Globe, Server } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DDNSDualGatewayPayload } from "@/lib/api/ddns";
 
-const props = defineProps<{
+defineProps<{
   data: DDNSDualGatewayPayload | null;
   loading?: boolean;
 }>();
