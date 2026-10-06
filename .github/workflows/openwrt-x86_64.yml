@@ -85,8 +85,18 @@ jobs:
               "${GITHUB_WORKSPACE}/Go-Reauth-Proxy" \
               "${GITHUB_WORKSPACE}/dist/fn-knock-go-release"
 
+      - name: Lock gateway commit
+        id: gateway
+        shell: bash
+        run: |
+          GATEWAY_COMMIT="$(git -C Go-Reauth-Proxy rev-parse HEAD)"
+          echo "gateway_commit=${GATEWAY_COMMIT}" >> "$GITHUB_OUTPUT"
+          echo "Locked Go gateway commit: ${GATEWAY_COMMIT}"
+
       - name: Build musl Rust backend (amd64 only)
         shell: bash
+        env:
+          FN_KNOCK_GATEWAY_COMMIT: ${{ steps.gateway.outputs.gateway_commit }}
         run: |
           cargo install cargo-zigbuild --version "${CARGO_ZIGBUILD_VERSION}" --locked
           output="${GITHUB_WORKSPACE}/dist/fn-knock-artifacts/musl-rust-backends/server-admin-rs-linux-amd64"
