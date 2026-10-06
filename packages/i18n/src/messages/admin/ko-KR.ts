@@ -6180,6 +6180,21 @@ export const koKRAdmin = {
     logLevelInfo: "[정보]",
     logLevelWarn: "[경고]",
     logLevelError: "[오류]",
+    dualGatewayTitle: "fn-knock 듀얼 게이트웨이 통합 도메인",
+    dualGatewayDescription:
+      "동일한 도메인에 AAAA와 A 레코드를 동시에 게시합니다. IPv6 클라이언트는 DDNS로 직접 접속, IPv4 클라이언트는 Cloudflare 터널을 통해 라우팅됩니다.",
+    dualGatewayReady: "듀얼 게이트웨이 두 경로 모두 준비 완료",
+    dualGatewayPartial: "듀얼 게이트웨이 일부만 준비됨",
+    dualGatewayDdnsNotConfigured: "DDNS 기본 도메인이 설정되지 않았습니다",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare Tunnel이 연결되지 않았거나 managed 모드가 아닙니다",
+    dualGatewayNoIpv6: "DDNS에서 공개 IPv6 주소를 감지하지 못했습니다",
+    dualGatewayIpv6Label: "IPv6 직접 접속 (DDNS 게이트웨이 A)",
+    dualGatewayIpv6Desc:
+      "IPv6 지원 클라이언트는 AAAA 레코드를 조회하여 공개 IPv6 주소로 직접 연결합니다",
+    dualGatewayIpv4Label: "IPv4 Cloudflare 경유 (게이트웨이 B)",
+    dualGatewayIpv4Desc:
+      "IPv4 전용 클라이언트는 A 레코드를 조회하여 Cloudflare Tunnel로 회귀합니다",
   },
   authSettings: {
     title: "TOTP 토큰 관리",

@@ -6235,6 +6235,21 @@ export const enAdmin = {
     logLevelInfo: "[Info]",
     logLevelWarn: "[Warning]",
     logLevelError: "[Error]",
+    dualGatewayTitle: "fn-knock Dual Gateway Unified Domain",
+    dualGatewayDescription:
+      "Publish both AAAA and A records on the same domain. IPv6 clients go direct via DDNS; IPv4 clients tunnel through Cloudflare.",
+    dualGatewayReady: "Both gateway paths are ready",
+    dualGatewayPartial: "Dual gateway is partially ready",
+    dualGatewayDdnsNotConfigured: "DDNS primary domain not configured",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare Tunnel not connected or not in managed mode",
+    dualGatewayNoIpv6: "No public IPv6 address detected by DDNS",
+    dualGatewayIpv6Label: "IPv6 Direct (DDNS Gateway A)",
+    dualGatewayIpv6Desc:
+      "Clients with IPv6 hit the AAAA record and connect directly to the public IPv6 address",
+    dualGatewayIpv4Label: "IPv4 via Cloudflare (Gateway B)",
+    dualGatewayIpv4Desc:
+      "IPv4-only clients hit the A record and are routed back through Cloudflare Tunnel",
   },
   authSettings: {
     title: "TOTP Token Management",

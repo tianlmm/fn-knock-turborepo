@@ -6224,6 +6224,21 @@ export const jaJPAdmin = {
     logLevelInfo: "[情報]",
     logLevelWarn: "[警告]",
     logLevelError: "[エラー]",
+    dualGatewayTitle: "fn-knock デュアルゲートウェイ統一ドメイン",
+    dualGatewayDescription:
+      "同一ドメインに AAAA と A の両方のレコードを公開します。IPv6 クライアントは DDNS 経由で直接接続、IPv4 クライアントは Cloudflare トンネルを利用します。",
+    dualGatewayReady: "デュアルゲートウェイの両経路が準備完了",
+    dualGatewayPartial: "デュアルゲートウェイは一部準備完了",
+    dualGatewayDdnsNotConfigured: "DDNS プライマリドメインが未設定",
+    dualGatewayCloudflareNotReady:
+      "Cloudflare Tunnel が未接続、または managed モードになっていません",
+    dualGatewayNoIpv6: "DDNS で公開 IPv6 アドレスが検出されませんでした",
+    dualGatewayIpv6Label: "IPv6 直接接続（DDNS ゲートウェイ A）",
+    dualGatewayIpv6Desc:
+      "IPv6 対応クライアントは AAAA レコードにヒットし、公開 IPv6 アドレスに直接接続します",
+    dualGatewayIpv4Label: "IPv4 Cloudflare 経由（ゲートウェイ B）",
+    dualGatewayIpv4Desc:
+      "IPv4 のみのクライアントは A レコードにヒットし、Cloudflare Tunnel 経由で戻されます",
   },
   authSettings: {
     title: "TOTP トークン管理",
