@@ -122,7 +122,6 @@ jobs:
           FN_KNOCK_USE_PREPARED_ARTIFACTS=1 \
           FN_KNOCK_OPENWRT_ARCHES="x86_64:amd64" \
           FN_KNOCK_OPENWRT_FORMATS="ipk" \
-          FN_KNOCK_OPENWRT_IPK_FORMAT="ar" \
           bash ./scripts/build-openwrt-ipk.sh
 
       - name: Show built artifacts
