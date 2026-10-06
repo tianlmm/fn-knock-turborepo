@@ -1985,7 +1985,18 @@
       "publicDnsNoUsableServer": "所选网卡无法连接公共 DNS 服务器",
       "publicCheckTimeout": "公网探测请求超时",
       "publicCheckTooManyRedirects": "公网探测请求重定向次数过多",
-      "interfacePreferredRecoveryDeferred": "{family} 优选地址 {preferred} 已恢复，连续确认 {count}/{required}；暂时保持 {current}，避免频繁回切"
+      "interfacePreferredRecoveryDeferred": "{family} 优选地址 {preferred} 已恢复，连续确认 {count}/{required}；暂时保持 {current}，避免频繁回切",
+      "dualGatewayTitle": "双网关统一域名",
+      "dualGatewayDescription": "同一域名同时发布 AAAA 和 A 记录，IPv6 客户端走 DDNS 直连，IPv4 客户端走 Cloudflare 穿透",
+      "dualGatewayReady": "双网关入口已就绪",
+      "dualGatewayPartial": "双网关入口部分就绪",
+      "dualGatewayDdnsNotConfigured": "DDNS 未配置主域",
+      "dualGatewayCloudflareNotReady": "Cloudflare Tunnel 未接入或未进入 managed 模式",
+      "dualGatewayNoIpv6": "DDNS 未检测到可用的公网 IPv6 地址",
+      "dualGatewayIpv6Label": "IPv6 直连（DDNS 网关 A）",
+      "dualGatewayIpv6Desc": "客户端有 IPv6 时命中 AAAA 记录，直连公网 IPv6 地址",
+      "dualGatewayIpv4Label": "IPv4 穿透（Cloudflare 网关 B）",
+      "dualGatewayIpv4Desc": "客户端仅 IPv4 时命中 A 记录，经 Cloudflare Tunnel 回源"
     },
     "smartConnect": {
       "runTypes": {
@@ -5239,7 +5250,18 @@
       "publicDnsNoUsableServer": "所選網卡無法連線公共 DNS 伺服器",
       "publicCheckTimeout": "公網探測請求逾時",
       "publicCheckTooManyRedirects": "公網探測請求重新導向次數過多",
-      "interfacePreferredRecoveryDeferred": "{family} 優選位址 {preferred} 已恢復，連續確認 {count}/{required}；暫時維持 {current}，避免頻繁切回"
+      "interfacePreferredRecoveryDeferred": "{family} 優選位址 {preferred} 已恢復，連續確認 {count}/{required}；暫時維持 {current}，避免頻繁切回",
+      "dualGatewayTitle": "雙網關統一域名",
+      "dualGatewayDescription": "同一域名同時發布 AAAA 和 A 記錄，IPv6 客戶端走 DDNS 直連，IPv4 客戶端走 Cloudflare 穿透",
+      "dualGatewayReady": "雙網關入口已就緒",
+      "dualGatewayPartial": "雙網關入口部分就緒",
+      "dualGatewayDdnsNotConfigured": "DDNS 未配置主域",
+      "dualGatewayCloudflareNotReady": "Cloudflare Tunnel 未接入或未進入 managed 模式",
+      "dualGatewayNoIpv6": "DDNS 未偵測到可用的公網 IPv6 位址",
+      "dualGatewayIpv6Label": "IPv6 直連（DDNS 網關 A）",
+      "dualGatewayIpv6Desc": "客戶端有 IPv6 時命中 AAAA 記錄，直連公網 IPv6 位址",
+      "dualGatewayIpv4Label": "IPv4 穿透（Cloudflare 網關 B）",
+      "dualGatewayIpv4Desc": "客戶端僅 IPv4 時命中 A 記錄，經 Cloudflare Tunnel 回源"
     },
     "smartConnect": {
       "runTypes": {
@@ -8493,7 +8515,18 @@
       "publicDnsNoUsableServer": "The selected interface cannot reach a public DNS server",
       "publicCheckTimeout": "The public detection request timed out",
       "publicCheckTooManyRedirects": "The public detection request followed too many redirects",
-      "interfacePreferredRecoveryDeferred": "{family} preferred address {preferred} recovered ({count}/{required} consecutive checks); keeping {current} temporarily to prevent flapping"
+      "interfacePreferredRecoveryDeferred": "{family} preferred address {preferred} recovered ({count}/{required} consecutive checks); keeping {current} temporarily to prevent flapping",
+      "dualGatewayTitle": "Dual-gateway unified domain",
+      "dualGatewayDescription": "Publish both AAAA and A records for the same hostname. IPv6 clients use DDNS direct, IPv4 clients go through Cloudflare tunnel",
+      "dualGatewayReady": "Dual-gateway entry is ready",
+      "dualGatewayPartial": "Dual-gateway entry is partially ready",
+      "dualGatewayDdnsNotConfigured": "Primary DDNS target is not configured",
+      "dualGatewayCloudflareNotReady": "Cloudflare Tunnel is not connected or not in managed mode",
+      "dualGatewayNoIpv6": "DDNS has not detected a public IPv6 address",
+      "dualGatewayIpv6Label": "IPv6 direct (DDNS gateway A)",
+      "dualGatewayIpv6Desc": "IPv6 clients hit the AAAA record and connect directly to the public IPv6",
+      "dualGatewayIpv4Label": "IPv4 through Cloudflare (gateway B)",
+      "dualGatewayIpv4Desc": "IPv4-only clients hit the A record and are routed back via Cloudflare Tunnel"
     },
     "smartConnect": {
       "runTypes": {
@@ -11747,7 +11780,18 @@
       "publicDnsNoUsableServer": "선택한 인터페이스에서 공용 DNS 서버에 연결할 수 없습니다.",
       "publicCheckTimeout": "공인 IP 감지 요청 시간이 초과되었습니다.",
       "publicCheckTooManyRedirects": "공인 IP 감지 요청이 너무 많이 리디렉션되었습니다.",
-      "interfacePreferredRecoveryDeferred": "{family} 기본 주소 {preferred} 복구를 연속 확인 중입니다({count}/{required}). 반복 전환을 방지하기 위해 현재 {current}을(를) 유지합니다."
+      "interfacePreferredRecoveryDeferred": "{family} 기본 주소 {preferred} 복구를 연속 확인 중입니다({count}/{required}). 반복 전환을 방지하기 위해 현재 {current}을(를) 유지합니다.",
+      "dualGatewayTitle": "듀얼 게이트웨이 통합 도메인",
+      "dualGatewayDescription": "동일 호스트명에 AAAA와 A 레코드를 동시에 게시. IPv6 클라이언트는 DDNS 직접, IPv4 클라이언트는 Cloudflare 터널 경유",
+      "dualGatewayReady": "듀얼 게이트웨이 진입점 준비 완료",
+      "dualGatewayPartial": "듀얼 게이트웨이 진입점 부분 준비",
+      "dualGatewayDdnsNotConfigured": "기본 DDNS 항목이 설정되지 않았습니다",
+      "dualGatewayCloudflareNotReady": "Cloudflare 터널이 연결되지 않았거나 managed 모드가 아닙니다",
+      "dualGatewayNoIpv6": "DDNS가 공개 IPv6 주소를 감지하지 못했습니다",
+      "dualGatewayIpv6Label": "IPv6 직접 (DDNS 게이트웨이 A)",
+      "dualGatewayIpv6Desc": "IPv6 클라이언트는 AAAA 레코드를 적중하여 공개 IPv6에 직접 연결",
+      "dualGatewayIpv4Label": "IPv4 Cloudflare 경유 (게이트웨이 B)",
+      "dualGatewayIpv4Desc": "IPv4 전용 클라이언트는 A 레코드를 적중하여 Cloudflare 터널로 회귀"
     },
     "smartConnect": {
       "runTypes": {
@@ -15001,7 +15045,18 @@
       "publicDnsNoUsableServer": "選択したインターフェースからパブリック DNS サーバーに接続できません",
       "publicCheckTimeout": "グローバル IP 検出リクエストがタイムアウトしました",
       "publicCheckTooManyRedirects": "グローバル IP 検出リクエストのリダイレクト回数が多すぎます",
-      "interfacePreferredRecoveryDeferred": "{family} の優先アドレス {preferred} の復旧を連続確認中です（{count}/{required}）。頻繁な切り替えを防ぐため、現在の {current} を一時的に維持します。"
+      "interfacePreferredRecoveryDeferred": "{family} の優先アドレス {preferred} の復旧を連続確認中です（{count}/{required}）。頻繁な切り替えを防ぐため、現在の {current} を一時的に維持します。",
+      "dualGatewayTitle": "デュアルゲートウェイ統一ドメイン",
+      "dualGatewayDescription": "同一ホスト名に AAAA と A の両方のレコードを発行。IPv6 クライアントは DDNS 直連、IPv4 クライアントは Cloudflare トンネル経由",
+      "dualGatewayReady": "デュアルゲートウェイエントリは準備完了",
+      "dualGatewayPartial": "デュアルゲートウェイエントリは一部準備完了",
+      "dualGatewayDdnsNotConfigured": "メイン DDNS エントリが設定されていません",
+      "dualGatewayCloudflareNotReady": "Cloudflare トンネルが未接続、または managed モードではありません",
+      "dualGatewayNoIpv6": "DDNS が公開 IPv6 アドレスを検出していません",
+      "dualGatewayIpv6Label": "IPv6 直連（DDNS ゲートウェイ A）",
+      "dualGatewayIpv6Desc": "IPv6 クライアントは AAAA レコードを命中し、公開 IPv6 に直接接続",
+      "dualGatewayIpv4Label": "IPv4 Cloudflare 経由（ゲートウェイ B）",
+      "dualGatewayIpv4Desc": "IPv4 のみのクライアントは A レコードを命中し、Cloudflare トンネル経由で回源"
     },
     "smartConnect": {
       "runTypes": {
